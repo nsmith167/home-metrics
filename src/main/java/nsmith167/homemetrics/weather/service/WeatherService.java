@@ -18,8 +18,11 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.newA
 @Component
 public class WeatherService {
 
-    @Autowired
-    WeatherRepository weatherRepository;
+    private final WeatherRepository weatherRepository;
+
+    public WeatherService(WeatherRepository weatherRepository) {
+        this.weatherRepository = weatherRepository;
+    }
 
     public WeatherReading getLatestWeather(int zipCode, Instant timestamp) {
         AggregationOperation matchZip = Aggregation.match(Criteria.where(WeatherRepositoryAggregates.DATA_MODEL_ZIP_PATH).is(zipCode));
