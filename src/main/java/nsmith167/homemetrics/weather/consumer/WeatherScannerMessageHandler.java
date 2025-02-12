@@ -1,29 +1,31 @@
 package nsmith167.homemetrics.weather.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nsmith167.homemetrics.weather.consumer.model.WeatherScannerMessage;
 import nsmith167.homemetrics.weather.mapper.WeatherScannerMessageMapper;
 import nsmith167.homemetrics.weather.service.WeatherService;
-import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Component
-public class WeatherMqttConsumer {
+public class WeatherScannerMessageHandler {
 
     private final WeatherService weatherService;
+    private final ObjectMapper objectMapper;
 
-    public WeatherMqttConsumer(WeatherService weatherService) {
+    public WeatherScannerMessageHandler(
+            WeatherService weatherService,
+            ObjectMapper objectMapper
+    ) {
         this.weatherService = weatherService;
+        this.objectMapper = objectMapper;
     }
 
-    public void consumeWeatherScannerMessage(Message<?> message) {
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    public void handleWeatherScannerMessage(String message) {
         WeatherScannerMessage deserializedMessage;
         try {
-            deserializedMessage = objectMapper.readValue((String) message.getPayload(), WeatherScannerMessage.class);
+            deserializedMessage = objectMapper.readValue(message, WeatherScannerMessage.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
