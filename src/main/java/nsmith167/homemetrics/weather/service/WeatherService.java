@@ -24,7 +24,7 @@ public class WeatherService {
         this.weatherRepository = weatherRepository;
     }
 
-    public WeatherReading getLatestWeather(int zipCode, Instant timestamp) {
+    public WeatherReading getLatestWeather(String zipCode, Instant timestamp) {
         AggregationOperation matchZip = Aggregation.match(Criteria.where(WeatherRepositoryAggregates.DATA_MODEL_ZIP_PATH).is(zipCode));
         AggregationOperation filterTimestamp = Aggregation.match(Criteria.where(WeatherRepositoryAggregates.DATA_MODEL_TIMESTAMP_PATH).lte(timestamp));
         AggregationOperation sortByTimestampDesc = Aggregation.sort(Sort.Direction.DESC, WeatherRepositoryAggregates.DATA_MODEL_TIMESTAMP_PATH);
@@ -35,11 +35,13 @@ public class WeatherService {
         ).getFirst();
     }
 
-    public List<WeatherReading> getWeatherHistory(int zipCode, long startTimeSeconds, long endTimeSeconds) {
+    public List<WeatherReading> getWeatherHistory(String zipCode, Instant startTime, Instant endTime) {
         AggregationOperation matchZip = Aggregation.match(Criteria.where(WeatherRepositoryAggregates.DATA_MODEL_ZIP_PATH).is(zipCode));
         AggregationOperation sortByTimestampDesc = Aggregation.sort(Sort.Direction.DESC, WeatherRepositoryAggregates.DATA_MODEL_TIMESTAMP_PATH);
-        //TODO: handle start and end times and call query
-        return List.of();
+        AggregationOperation filterTimestamp = Aggregation.match(Criteria.where(WeatherRepositoryAggregates.DATA_MODEL_TIMESTAMP_PATH).lte(endTime).gte(startTime));
+        return weatherRepository.findWeatherReadingsByAggregationPipeline(
+                newAggregation(matchZip, sortByTimestampDesc, filterTimestamp)
+        );
     }
 
     public void saveWeatherReading(WeatherReading reading) {

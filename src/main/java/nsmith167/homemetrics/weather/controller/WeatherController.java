@@ -1,8 +1,8 @@
 package nsmith167.homemetrics.weather.controller;
 
+import nsmith167.homemetrics.weather.dto.WeatherReadingDto;
 import nsmith167.homemetrics.weather.mapper.WeatherReadingDtoMapper;
 import nsmith167.homemetrics.weather.model.WeatherReading;
-import nsmith167.homemetrics.weather.dto.WeatherReadingDto;
 import nsmith167.homemetrics.weather.service.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ public class WeatherController {
     @GetMapping("/local/latest")
     public ResponseEntity<WeatherReadingDto> getLatestWeather(@RequestParam("zipCode") String zipCode) {
         WeatherReading result = weatherService
-                .getLatestWeather(Integer.parseInt(zipCode), Instant.now()); //TODO: Refactor this once db is using string for zip
+                .getLatestWeather(zipCode, Instant.now());
 
         return new ResponseEntity<>(
                 WeatherReadingDtoMapper.INSTANCE.weatherReadingToWeatherReadingDto(result),
@@ -36,13 +36,12 @@ public class WeatherController {
     @GetMapping("/local/history")
     public ResponseEntity<List<WeatherReadingDto>> getWeatherHistory(
             @RequestParam("zipCode") String zipCode,
-            @RequestParam(value = "startTime", required = false, defaultValue = "0") long startTime,
-            @RequestParam(value = "endTime", required = false, defaultValue = "0") long endTime
+            @RequestParam(value = "startTime", required = true, defaultValue = "0") long startTimeSeconds,
+            @RequestParam(value = "endTime", required = true, defaultValue = "0") long endTimeSeconds
     ) {
-        if (endTime == 0) {
-            endTime = Long.MAX_VALUE;
-        }
-        List<WeatherReading> results = weatherService.getWeatherHistory(Integer.parseInt(zipCode), startTime, endTime);
+        Instant startTime = Instant.ofEpochSecond(startTimeSeconds);
+        Instant endTime = Instant.ofEpochSecond(endTimeSeconds);
+        List<WeatherReading> results = weatherService.getWeatherHistory(zipCode, startTime, endTime);
         List<WeatherReadingDto> response = results.stream()
                 .map(WeatherReadingDtoMapper.INSTANCE::weatherReadingToWeatherReadingDto)
                 .toList();

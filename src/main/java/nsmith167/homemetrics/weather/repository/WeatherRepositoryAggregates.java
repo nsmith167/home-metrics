@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface WeatherRepositoryAggregates {
 
-    String DATA_MODEL_ZIP_PATH = "metadata.zip";
+    String DATA_MODEL_ZIP_PATH = "metadata.zip_code";
     String DATA_MODEL_TIMESTAMP_PATH = "timestamp";
 
     List<WeatherReading> findWeatherReadingsByAggregationPipeline(Aggregation aggregation);
