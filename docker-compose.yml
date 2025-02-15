@@ -2,6 +2,7 @@ services:
   home-metrics:
     image: nsmith167/home-metrics:latest
     container_name: home-metrics
+    network_mode: "host"
     restart: unless-stopped
     environment:
       - MONGODB_HOST=${MONGODB_HOST}
