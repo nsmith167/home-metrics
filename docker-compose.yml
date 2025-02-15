@@ -1,0 +1,15 @@
+services:
+  home-metrics:
+    image: nsmith167/home-metrics:latest
+    container_name: home-metrics
+    restart: unless-stopped
+    environment:
+      - MONGODB_HOST=${MONGODB_HOST}
+      - MQTT_BROKER_URL=${MQTT_BROKER_URL}
+      - MQTT_CLIENTID=${MQTT_CLIENTID}
+      - MQTT_TOPICS_WEATHER_NAME=${MQTT_TOPICS_WEATHER_NAME}
+      - MQTT_TOPICS_TEMPHUMIDITY_NAME=${MQTT_TOPICS_TEMPHUMIDITY_NAME}
+      - MQTT_USERNAME=${MQTT_USERNAME}
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
+    ports:
+      - "8080:8080"
