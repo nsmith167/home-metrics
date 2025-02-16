@@ -21,3 +21,16 @@ services:
     restart: unless-stopped
     ports:
       - "8050:8050"
+  weather-scanner:
+    image: nsmith167/weather-scanner:latest
+    container_name: weather-scanner
+    network_mode: "host"
+    restart: unless-stopped
+    environment:
+      - WEATHER_API_KEY=${WEATHER_API_KEY}
+      - WEATHER_ZIP=${WEATHER_ZIP}
+      - MQTT_HOST=${MQTT_HOST}
+      - MQTT_USERNAME=${MQTT_USERNAME}
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
+      - WEATHER_TOPIC=${MQTT_TOPICS_WEATHER_NAME}
+  
