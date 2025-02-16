@@ -17,6 +17,7 @@ services:
   home-metrics-dashboard:
     image: nsmith167/home-metrics-dashboard:latest
     container_name: home-metrics-dashboard
+    network_mode: "host"
     restart: unless-stopped
     ports:
       - "8050:8050"
