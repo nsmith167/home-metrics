@@ -14,3 +14,9 @@ services:
       - MQTT_PASSWORD=${MQTT_PASSWORD}
     ports:
       - "8080:8080"
+  home-metrics-dashboard:
+    image: nsmith167/home-metrics-dashboard:latest
+    container_name: home-metrics-dashboard
+    restart: unless-stopped
+    ports:
+      - "8050:8050"
