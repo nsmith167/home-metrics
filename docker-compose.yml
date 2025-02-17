@@ -33,4 +33,9 @@ services:
       - MQTT_USERNAME=${MQTT_USERNAME}
       - MQTT_PASSWORD=${MQTT_PASSWORD}
       - WEATHER_TOPIC=${MQTT_TOPICS_WEATHER_NAME}
+  mqtt-broker:
+    image: eclipse-mosquitto:latest
+    container_name: mqtt-broker
+    network_mode: "host"
+    restart: unless-stopped
   
